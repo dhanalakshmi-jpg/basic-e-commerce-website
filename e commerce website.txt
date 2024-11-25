@@ -1,0 +1,112 @@
+class Product:
+    def __init__(self, product_id, name, price, stock):
+        self.product_id = product_id
+        self.name = name
+
+        self.price = price
+        self.stock = stock
+
+    def __str__(self):
+        return f"ID: {self.product_id}, Name: {self.name}, Price: ${self.price:.2f}, Stock: {self.stock}"
+
+class Cart:
+    def __init__(self):
+        self.items = []
+        self.usd_to_inr_rate = 82.74  # Example conversion rate; this can be updated as needed
+
+
+    def add_product(self, product):
+        self.items.append(product)
+        print(f"{product.name} has been added to the cart.")
+
+    def remove_product(self, product_id):
+        for item in self.items:
+            if item.product_id == product_id:
+                self.items.remove(item)
+                print(f"Product ID {product_id} has been removed from the cart.")
+                return
+        print(f"Product ID {product_id} not found in the cart.")
+
+    def view_cart(self):
+        if not self.items:
+            print("Cart is empty.")
+        else:
+            print("\nCart Items:")
+            for item in self.items:
+                print(item)
+
+    def checkout(self):
+        if not self.items:
+            print("Cart is empty. Add products before checkout.")
+        else:
+            total_usd = sum(item.price for item in self.items)
+            total_inr = total_usd * self.usd_to_inr_rate
+            print(f"Total amount due: ${total_usd:.2f} USD")
+            print(f"Total amount due: ₹{total_inr:.2f} INR")
+            print("Checking out... Thank you for your purchase!")
+            self.items = []
+
+def display_products(products):
+    if not products:
+        print("No products available.")
+    else:
+        print("\nAvailable Products:")
+        for product in products:
+            print(product)
+
+def main():
+    products = []
+    cart = Cart()
+
+    while True:
+        print("\n1. View Products")
+        print("2. Add Product to Cart")
+        print("3. Remove Product from Cart")
+        print("4. View Cart")
+        print("5. Checkout")
+        print("6. Exit")
+        
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            display_products(products)
+
+        elif choice == '2':
+            while True:
+                print("\nAdd Product:")
+                product_id = int(input("Enter product ID: "))
+                name = input("Enter product name: ")
+                price = float(input("Enter product price: "))
+                stock = int(input("Enter product stock: "))
+
+                product = Product(product_id, name, price, stock)
+                products.append(product)
+                cart.add_product(product)
+
+                add_more = input("Do you want to add more products? (yes/no): ").lower()
+                if add_more != "yes":
+                    break
+
+        elif choice == '3':
+            cart.view_cart()
+            if cart.items:
+                product_id = int(input("Enter the product ID to remove from the cart: "))
+                cart.remove_product(product_id)
+            else:
+                print("No products in the cart to remove.")
+
+        elif choice == '4':
+            cart.view_cart()
+
+        elif choice == '5':
+            cart.checkout()
+
+        elif choice == '6':
+            print("Exiting the program. Goodbye!")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
